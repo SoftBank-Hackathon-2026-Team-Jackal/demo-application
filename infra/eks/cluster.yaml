@@ -1,0 +1,37 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: cmp-demo-source
+  region: ap-northeast-2
+  tags:
+    project: cmp-demo-application
+    purpose: migration-source
+availabilityZones:
+  - ap-northeast-2a
+  - ap-northeast-2c
+vpc:
+  cidr: 10.20.0.0/16
+  nat:
+    gateway: Single
+iam:
+  withOIDC: true
+  serviceAccounts:
+    - metadata:
+        name: aws-load-balancer-controller
+        namespace: kube-system
+      wellKnownPolicies:
+        awsLoadBalancerController: true
+addons:
+  - name: aws-ebs-csi-driver
+    wellKnownPolicies:
+      ebsCSIController: true
+managedNodeGroups:
+  - name: demo-nodes
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    privateNetworking: true
+    volumeSize: 20
+    labels:
+      project: cmp-demo-application

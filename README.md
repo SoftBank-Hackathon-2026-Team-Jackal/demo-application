@@ -12,6 +12,7 @@
 | `tools/verify.py` | 원장의 각 메시지가 이전 대상 API에 같은 ID·본문으로 존재하는지 확인 |
 | `tools/create_edge.py` | 도메인 없이 CloudFront 기본 HTTPS 주소를 ALB 앞에 생성 |
 | `infra/k8s/source.yaml` | 원본 EKS의 Namespace·ConfigMap·Service·PostgreSQL·PVC·앱·Ingress |
+| `docs/deployment.md` | 실제 원본 환경 주소, 배포 상태, 검증 결과와 재확인 명령 |
 | `compose.yaml` | 로컬 PostgreSQL 16과 API 실행 |
 
 ## 데이터 계약
@@ -29,7 +30,7 @@
 
 ## 배포 원칙
 
-- 원본은 `ap-northeast-2` EKS의 `demo-source` Namespace, 앱 1 Pod(250m/256Mi), PostgreSQL 16 1 Pod(500m/1Gi), 10Gi EBS PVC다.
+- 원본은 `ap-northeast-2` EKS의 `demo-source` Namespace, 앱 1 Pod(250m/256Mi), PostgreSQL 16 1 Pod(500m/1Gi), 10Gi EBS PVC다. EKS VPC CNI NetworkPolicy를 켜고 앱 Pod의 송신을 DB 5432·클러스터 DNS 53으로 제한한다.
 - 이미지는 `linux/amd64`로 빌드해 ECR에 올리고 반환된 Digest URI를 배포에 사용한다. Sandbox와 이전 대상에도 그 Digest를 넘긴다.
 - `.env` 원문이나 Secret은 저장소·이미지·Vercel에 넣지 않는다. Vercel은 읽기 전용 프록시에 백엔드 주소 `BACKEND_ORIGIN`만 사용한다.
 - `AWS_PROFILE=cmp-aws-prod eksctl create cluster -f infra/eks/cluster.yaml`로 전용 원본 클러스터를 준비한다. 클러스터의 AWS Load Balancer Controller를 설치한 뒤 `infra/eks/deploy-source.sh <ECR Digest URI>`로 Secret과 매니페스트를 적용한다.
@@ -37,3 +38,5 @@
 - ALB 주소가 준비되면 `apps/api/.venv/bin/python tools/create_edge.py --origin <ALB DNS>`로 기본 HTTPS 주소를 만든다. Vercel의 `BACKEND_ORIGIN`에는 이 HTTPS 주소를 설정한다.
 
 데모용 AWS 네트워크는 소스 VPC `10.20.0.0/16`, 서로 다른 두 AZ의 Public·Private 서브넷, 노드 `t3.medium` 2대를 기준으로 한다. `eksctl`이 각 서브넷을 `/19`로 자동 할당한다. 별도 도메인·인증서가 없으므로 CloudFront 기본 HTTPS 주소에서 TLS를 종료하고 ALB는 HTTP 원본으로 사용한다. Vercel 화면도 HTTPS이며 서버 함수가 CloudFront API를 프록시한다.
+
+현재 배포 주소와 검증 기록은 [docs/deployment.md](docs/deployment.md)에 정리했다.

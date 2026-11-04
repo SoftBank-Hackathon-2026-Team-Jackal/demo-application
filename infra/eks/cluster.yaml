@@ -22,6 +22,9 @@ iam:
       wellKnownPolicies:
         awsLoadBalancerController: true
 addons:
+  - name: vpc-cni
+    configurationValues: '{"enableNetworkPolicy":"true"}'
+    resolveConflicts: overwrite
   - name: aws-ebs-csi-driver
     wellKnownPolicies:
       ebsCSIController: true

@@ -61,7 +61,7 @@ spec:
       containers:
         - name: postgres
           image: postgres:16
-          command: ["postgres", "-c", "wal_level=logical", "-c", "max_replication_slots=4", "-c", "max_wal_senders=4"]
+          args: ["-c", "wal_level=logical", "-c", "max_replication_slots=4", "-c", "max_wal_senders=4"]
           ports:
             - name: postgres
               containerPort: 5432
@@ -162,11 +162,11 @@ metadata:
   name: demo-api
   namespace: demo-source
   annotations:
-    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-path: /health
 spec:
+  ingressClassName: alb
   rules:
     - http:
         paths:
@@ -177,3 +177,34 @@ spec:
                 name: demo-api
                 port:
                   number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: demo-api-egress
+  namespace: demo-source
+spec:
+  podSelector:
+    matchLabels:
+      app: demo-api
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: demo-db
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53

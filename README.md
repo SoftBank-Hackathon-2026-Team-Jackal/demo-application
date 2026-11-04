@@ -13,6 +13,7 @@
 | `tools/create_edge.py` | 도메인 없이 CloudFront 기본 HTTPS 주소를 ALB 앞에 생성 |
 | `infra/k8s/source.yaml` | 원본 EKS의 Namespace·ConfigMap·Service·PostgreSQL·PVC·앱·Ingress |
 | `docs/deployment.md` | 실제 원본 환경 주소, 배포 상태, 검증 결과와 재확인 명령 |
+| `docs/manual-deploy.md` | GitHub Actions에서 main의 백엔드를 수동 배포하는 방법 |
 | `compose.yaml` | 로컬 PostgreSQL 16과 API 실행 |
 
 ## 데이터 계약
@@ -40,3 +41,5 @@
 데모용 AWS 네트워크는 소스 VPC `10.20.0.0/16`, 서로 다른 두 AZ의 Public·Private 서브넷, 노드 `t3.medium` 2대를 기준으로 한다. `eksctl`이 각 서브넷을 `/19`로 자동 할당한다. 별도 도메인·인증서가 없으므로 CloudFront 기본 HTTPS 주소에서 TLS를 종료하고 ALB는 HTTP 원본으로 사용한다. Vercel 화면도 HTTPS이며 서버 함수가 CloudFront API를 프록시한다.
 
 현재 배포 주소와 검증 기록은 [docs/deployment.md](docs/deployment.md)에 정리했다.
+
+백엔드 코드 변경 시 GitHub Actions의 수동 배포 워크플로를 사용한다. [실행 방법](docs/manual-deploy.md)을 참고한다.

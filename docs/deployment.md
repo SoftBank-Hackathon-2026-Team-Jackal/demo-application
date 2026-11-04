@@ -22,7 +22,7 @@ CloudFront에서 HTTPS를 종료하고 ALB 원본에는 HTTP로 연결한다. DB
 
 ## 프론트 상태
 
-`apps/web`은 로컬 빌드 및 API 프록시 확인을 마쳤다. Vercel `kimminseo-s-projects/cmp-demo-application`에 로컬 CLI로 배포했으며 Git 저장소 연결은 설정하지 않았다. 프로젝트의 SSO 배포 보호가 켜져 있어 공개 시연 URL로 사용할 수 없다. 사용자 요청에 따라 프론트 배포와 공개 설정 작업은 보류 중이다.
+`apps/web`은 로컬 빌드 및 API 프록시 확인을 마쳤다. Vercel `kimminseo-s-projects/cmp-demo-application`에 로컬 CLI로 배포했으며 Git 저장소 연결은 설정하지 않았다. 사용자 승인에 따라 프로젝트의 SSO 배포 보호를 해제했다. 공개 화면 주소는 `https://cmp-demo-application.vercel.app`이며, 로그인 없는 요청에서 화면과 `/api/messages?limit=1`이 모두 HTTP 200을 반환하고 총 100건을 표시하는 것을 확인했다.
 
 ## 재확인
 

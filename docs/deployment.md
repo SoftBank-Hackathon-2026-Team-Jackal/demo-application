@@ -22,7 +22,7 @@ CloudFront에서 HTTPS를 종료하고 ALB 원본에는 HTTP로 연결한다. DB
 
 ## 프론트 상태
 
-`apps/web`은 로컬 빌드 및 API 프록시 확인을 마쳤다. Vercel `kimminseo-s-projects/cmp-demo-application`에 로컬 CLI로 배포했으며 Git 저장소 연결은 설정하지 않았다. 사용자 승인에 따라 프로젝트의 SSO 배포 보호를 해제했다. 공개 화면 주소는 `https://cmp-demo-application.vercel.app`이며, 로그인 없는 요청에서 화면과 `/api/messages?limit=1`이 모두 HTTP 200을 반환하고 총 100건을 표시하는 것을 확인했다.
+`apps/web`은 로컬 빌드 및 API 프록시 확인을 마쳤다. Vercel `kimminseo-s-projects/cmp-demo-application`에 로컬 CLI로 배포했으며 Git 저장소 연결은 설정하지 않았다. 사용자 승인에 따라 프로젝트의 SSO 배포 보호를 해제했다. 공개 화면 주소는 `https://cmp-demo-application.vercel.app`이다. `/api/messages` GET과 POST가 같은 백엔드로 전달된다. 토큰을 헤더로 보낸 POST 1건이 HTTP 201로 저장되고 이어진 GET에 표시되는 것을 확인했다. 토큰이 없는 POST는 HTTP 401이다. 초기 100건에 이 확인 메시지 1건을 더해 총 101건이다.
 
 ## 재확인
 

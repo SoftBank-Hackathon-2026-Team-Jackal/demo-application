@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: demo-api-deployer
+  namespace: demo-source
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["demo-api"]
+    verbs: ["get", "patch", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: demo-api-deployer
+  namespace: demo-source
+subjects:
+  - kind: Group
+    name: cmp-demo-deployers
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: demo-api-deployer
+  apiGroup: rbac.authorization.k8s.io
